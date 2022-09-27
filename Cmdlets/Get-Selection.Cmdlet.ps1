@@ -2,6 +2,7 @@ function Get-Selection {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory, Position=1, ValueFromPipeline)] [Selection[]] $Selections,
+        [Parameter()] [string] $Prompt = "Please select an option",
         [Parameter()] [switch] $Cancel = $false,
         [Parameter()] [switch] $Quit = $false
     )
@@ -37,14 +38,13 @@ function Get-Selection {
         foreach ($Option in $AllSelections) { Write-Host ("[ $($Option.Char.ToString().ToUpper()) ]  $($Option.Label)") }
 
         Write-Host ""
-        Write-Host "Please select an option: " -NoNewline
+        Write-Host "$($Prompt): " -NoNewline
 
         while ($true) {
             $Char = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
             $Selected = $AllSelections | Where-Object -Property Char -EQ -Value $Char
             if ($Selected) {
                 Write-Host $Selected.Char.ToString().ToUpper()
-                Write-Host ""
                 return $Selected.Value
             }
         }
